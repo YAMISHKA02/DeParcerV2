@@ -40,7 +40,7 @@ const main = async (initialPostNumber: number) => {
         const page: Page = await BROWSER.newPage()
         await page.goto('https://debank.com/stream?q=draw&tab=search', {waitUntil: 'domcontentloaded'})
         await page.waitForSelector('.RichTextView_articleContent__2tMQD')
-        await evaluateCode(page, initialPostNumber)
+        await evaluateCode(page, currentPost)
         
         for(let i = 0; i < 100; i++){
           await page.click('.db-segmentedItem:not(.isActive)')
