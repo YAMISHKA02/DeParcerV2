@@ -10,6 +10,8 @@ import { error } from 'console'
 const envPath = path.resolve('.env')
 dotenv.config({path: envPath})
 
+const existSelector = '#root > div > div.DesktopFrame_mainContainer__2V8Re > div.container_mainSubContainer__39U6P > div > div.DetailContainer_stream__2efLF > div > div > div > div:nth-child(1)'
+
 let BROWSER : Browser;
 
 const prodBrowserConfig: PuppeteerLaunchOptions = {
@@ -26,13 +28,14 @@ const devBrowserConfig: PuppeteerLaunchOptions = {
 
 const main = async (initialPostNumber: number) => {
   puppeteer.use(StealthPlugin())
-  BROWSER = await puppeteer.launch(prodBrowserConfig);
+  BROWSER = await puppeteer.launch(devBrowserConfig);
   
   let currentPost: number = initialPostNumber;
 
   while(true){
     try{
-      let POST100: number = currentPost+100
+      //30 постов для задерки выхода
+      let POST100: number = currentPost+130
       const isPost100Exist: boolean = await checkPostExist(POST100)
       if(isPost100Exist){
         console.log(currentPost, currentPost+100)
@@ -56,8 +59,8 @@ const main = async (initialPostNumber: number) => {
       else{
         fs.writeFileSync('lastPost.json', JSON.stringify({ currentPost }));
         console.log('Сохранено значение curPost.');
-        console.log('ждем 30 сек...')
-        await delay(30000)
+        console.log('ждем 120 сек...')
+        await delay(120000)
         continue
       }
     }
@@ -113,7 +116,7 @@ const checkPostExist = async (currentPost: number) => {
     await checkPage.waitForSelector(DownloadedSelector, {timeout: 3000})
     return true
   }catch{
-    const existElement = await checkPage.$('.db-empty-title > div:first')
+    const existElement = await checkPage.$(existSelector)
     const text = await checkPage.evaluate(element => element.textContent, existElement);
     if(text == 'This post has been hidden by the author'){
       return true
