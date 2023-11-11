@@ -16,4 +16,4 @@ COPY package*.json .
 RUN npm install
 COPY . .
 
-CMD ["npm", "run", "parse"]
+CMD ["npm", "run", "dealer"]
