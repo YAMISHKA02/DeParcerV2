@@ -34,33 +34,33 @@ const main = async (initialPostNumber: number) => {
 
   while(true){
     try{
-      //30 постов для задерки выхода
-      let POST100: number = currentPost+130
+      //40 постов для задерки выхода
+      let POST100: number = currentPost+70
       const isPost100Exist: boolean = await checkPostExist(POST100)
       if(isPost100Exist){
-        console.log(currentPost, currentPost+100)
+        console.log(currentPost, currentPost + 30)
   
         const page: Page = await BROWSER.newPage()
         await page.goto('https://debank.com/stream?q=draw&tab=search', {waitUntil: 'domcontentloaded'})
         await page.waitForSelector('.RichTextView_articleContent__2tMQD')
         await evaluateCode(page, currentPost)
         
-        for(let i = 0; i < 100; i++){
+        for(let i = 0; i < 30; i++){
           await page.click('.db-segmentedItem:not(.isActive)')
           await delay(1000)
           await page.waitForSelector('.RichTextView_articleContent__2tMQD')
           //сохраняем значение раз в 50 секунд
-          if(i%50 == 0) fs.writeFileSync('lastPost.json', JSON.stringify({ currentPost }));
+          if(i%15 == 0) fs.writeFileSync('lastPost.json', JSON.stringify({ currentPost }));
         }
         page.close()
         
-        currentPost+=100
+        currentPost+=30
       }
       else{
         fs.writeFileSync('lastPost.json', JSON.stringify({ currentPost }));
         console.log('Сохранено значение curPost.');
-        console.log('ждем 120 сек...')
-        await delay(120000)
+        console.log('ждем 60 сек...')
+        await delay(60000)
         continue
       }
     }
