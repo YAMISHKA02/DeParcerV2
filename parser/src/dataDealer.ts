@@ -65,7 +65,8 @@ const main = async (initialPostNumber: number) => {
         continue
       }
     }
-    catch(error){
+    catch(error) {
+      await BROWSER.close()
       break;
     }
   }
@@ -157,6 +158,7 @@ async function start() {
       await main(jsonData.currentPost)
     }
     catch(error){
+      
       console.log('Какая то херня, перезапускаем...')
     }
     

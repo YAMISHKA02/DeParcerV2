@@ -128,7 +128,7 @@ const sendDailyTopPools = async () => {
     let postsArray = []
     const rewardPosts = await Post.find({
         'data.article.reward_usd_value' : {$gte : minPrize},
-        'data.article.create_at': {$gt : lastDailyTop - dayInSeconds}
+        'data.article.create_at': {$gt : lastDailyTop - 2 * dayInSeconds}
         })
         .sort({'data.article.reward_usd_value': -1})
         .limit(10)
