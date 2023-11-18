@@ -14,6 +14,7 @@ const existSelector = '#root > div > div.DesktopFrame_mainContainer__2V8Re > div
 
 let BROWSER : Browser;
 
+
 const prodBrowserConfig: PuppeteerLaunchOptions = {
   headless: 'new',
   executablePath: '/usr/bin/google-chrome',
@@ -21,21 +22,21 @@ const prodBrowserConfig: PuppeteerLaunchOptions = {
 }
 
 const devBrowserConfig: PuppeteerLaunchOptions = {
-  headless: "new",
+  headless: 'new',
   args: ['--mute-audio', '--no-sandbox']
 }
 
 
 const main = async (initialPostNumber: number) => {
   puppeteer.use(StealthPlugin())
-  BROWSER = await puppeteer.launch(devBrowserConfig);
-  
+  BROWSER = await puppeteer.launch(prodBrowserConfig);
+
   let currentPost: number = initialPostNumber;
 
   while(true){
     try{
       //40 постов для задерки выхода
-      let POST100: number = currentPost+70
+      let POST100: number = currentPost + 70
       const isPost100Exist: boolean = await checkPostExist(POST100)
       if(isPost100Exist){
         console.log(currentPost, currentPost + 30)
@@ -65,9 +66,8 @@ const main = async (initialPostNumber: number) => {
       }
     }
     catch(error){
-      console.log(error.message)
+      break;
     }
-    
   }
 }
 
@@ -149,11 +149,18 @@ const delay = async (ms: number) => {
 
 
 async function start() {
-  const path = resolve('lastPost.json')
-  const jsonData = JSON.parse(fs.readFileSync(path, 'utf-8'));
-  console.log('Данные из JSON файла:', jsonData);
-  
-  await main(jsonData.currentPost)
+  while (true) {
+    try{
+      const path = resolve('lastPost.json')
+      const jsonData = JSON.parse(fs.readFileSync(path, 'utf-8'));
+      console.log('Данные из JSON файла:', jsonData);
+      await main(jsonData.currentPost)
+    }
+    catch(error){
+      console.log('Какая то херня, перезапускаем...')
+    }
+    
+  }
 }
 
 start()
